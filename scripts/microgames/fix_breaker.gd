@@ -83,7 +83,7 @@ func _press_switch(selected: int) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("1a2529"))
-	label_at("ELECTRICAL PANEL / MEMORY TEST", Vector2(175, 191), 23, YELLOW)
+	label_at("VOLTAGE MEMORY / LIGHTS OUT", Vector2(175, 191), 23, YELLOW)
 	label_at("WATCH" if stage == "watch" else "REPEAT  •  KEYS 1–6 / CLICK", Vector2(175, 230), 23, GREEN)
 	if stage == "repeat" and replay_available: button(REPLAY, "R  REPLAY ONCE", YELLOW)
 	panel(Rect2(188, 277, 918, 189), Color("3b4849"), BLUE)

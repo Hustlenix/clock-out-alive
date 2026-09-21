@@ -2,7 +2,7 @@
 
 *Your shift ends at 6 AM. The store does not.*
 
-An original Godot 4 lo-fi workplace-horror game about the overnight senior employee at The Last Stop. Complete eighteen small duties, decide which instructions deserve your trust, and make it to the front door with at least one safety mark.
+An original Godot 4 lo-fi workplace-horror arcade game about the overnight senior employee at The Last Stop. Clear eighteen escalating challenges, chain streak bonuses, decide which instructions deserve your trust, and make it to the front door with at least one safety mark.
 
 ![Real gameplay: scanning stock](media/gameplay-scan.png)
 
@@ -18,8 +18,8 @@ The browser export lives in `docs/index.html`. A Windows desktop export is writt
 
 ## Features
 
-- Ten input-driven microgames, each with a success path, failure path, timer pressure, feedback, and a guarded single completion signal.
-- Eighteen-assignment shift: the first eight duties return with harder variations, followed by the phone contradiction and final sign-out.
+- Ten input-driven arcade microgames, each with a success path, failure path, timer pressure, quick-clear scoring, feedback, and a guarded single completion signal.
+- Eighteen-assignment shift: the first eight challenges return with harder variations, followed by the phone contradiction and final sign-out.
 - Three Employee Safety points. Failures alter the rest of the shift through darker ambience, silhouettes, harder variations, and altered store feedback.
 - Eight previous-employee notes, progressive contradictions, optional Camera 4 evidence, and an inferable phone answer.
 - Loading screen, manager briefing, pause/restart, settings, volume, reduced motion, local best score, practice stations, winner scene, death scene, credits, and replay.
@@ -29,7 +29,7 @@ The browser export lives in `docs/index.html`. A Windows desktop export is writt
 
 ## Controls
 
-Mouse dragging and clicking are used for stock, shelves, cameras, the rat, notes, and buttons. Keyboard duties use WASD/arrows, number keys, A/R, Space, Tab, and text entry as shown on each task card. `Esc` pauses the shift.
+Mouse dragging and clicking are used for the scanner, shelf shuffle, cameras, rat race, notes, and buttons. Keyboard challenges use WASD/arrows, number keys, A/R, Space, Tab, and text entry as shown on each challenge card. `Esc` pauses the shift.
 
 The clock-out form requires the badge details `ALEX` and `0417`. The phone's answer is the sentence learned from the notes: **My shift ends at six.**
 

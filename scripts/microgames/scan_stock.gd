@@ -71,8 +71,8 @@ func _try_scan() -> void:
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("172326"))
 	sprite("checkout", Rect2(150, 160, 980, 420), Color(1, 1, 1, 0.20))
-	label_at("REGISTER 02  /  STOCK INTAKE", Vector2(175, 192), 23, YELLOW)
-	label_at("DRAG across the scanner  •  Do not scan anything that breathes", Vector2(175, 227), 20)
+	label_at("LIVING LABELS  /  SCAN STREAK", Vector2(175, 192), 23, YELLOW)
+	label_at("DRAG across the scanner  •  Chain clean scans, dodge the heartbeat", Vector2(175, 227), 20)
 	draw_line(Vector2(173, 532), Vector2(1110, 529), BLUE, 4)
 	panel(SCANNER, Color("26383a"), GREEN)
 	for j in range(7):

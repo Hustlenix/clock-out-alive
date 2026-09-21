@@ -4,16 +4,16 @@ const BASE = preload("res://scripts/microgame.gd")
 const STORY = preload("res://scripts/story_manager.gd")
 const AUDIO = preload("res://scripts/audio_manager.gd")
 const TASKS = [
-	["SCAN THE STOCK", "Drag everything across the scanner.\nLeave the product that breathes.", "MOUSE / DRAG", "scan_stock"],
-	["MOP THE SPILL", "Mop every pale spill.\nKeep moving when the floor moves.", "WASD / ARROW KEYS", "mop_spill"],
-	["RESTOCK AISLE 4", "Match each product to its shelf label.\nSomething else is doing inventory.", "MOUSE / DRAG", "restock_aisle"],
-	["FIX THE BREAKER", "Watch the numbered switches.\nRepeat the sequence after it disappears.", "1—6 / MOUSE", "fix_breaker"],
-	["CHECK THE CUSTOMER", "Compare the person, their ID and reflection.\nAdmit people. Reject contradictions.", "MOUSE / ADMIT OR REJECT", "check_customer"],
-	["HOLD THE STOCKROOM DOOR", "Hold SPACE or the brace button.\nMove the brace to each warning mark.", "SPACE + A / D / ARROWS", "hold_door"],
-	["CATCH THE RAT", "Click the real rat three times.\nReal rats have ears, a tail and warm eyes.", "MOUSE / CLICK", "catch_rat"],
-	["TUNE THE CAMERAS", "Clear all three feeds. File your report.\nThe fourth camera is not in the instructions.", "MOUSE / DRAG OR ARROWS", "tune_cameras"],
-	["ANSWER THE PHONE", "The manager said DO NOT ANSWER.\nThe task sheet says ANSWER THE PHONE.", "MOUSE / CHOOSE YOUR WORDS", "answer_phone"],
-	["CLOCK OUT", "Sign your name. Confirm your employee ID.\nYour shift ends at six.", "TYPE ALEX / MOUSE", "clock_out"]
+	["LIVING LABELS", "Drag the groceries through the scanner.\nOne package has a heartbeat. Build a clean streak without waking it.", "MOUSE / DRAG", "scan_stock"],
+	["SHADOW SLALOM", "Sweep every glowing puddle while the floor-shadow darts.\nKeep moving and do not let it tag your boots.", "WASD / ARROW KEYS", "mop_spill"],
+	["SHELF SHUFFLE", "Throw each product into the matching slot.\nThe aisle rearranges itself when you blink.", "MOUSE / DRAG", "restock_aisle"],
+	["VOLTAGE MEMORY", "Watch the breaker lights, then replay the sequence.\nOne fake switch wants you to press it.", "1-6 / MOUSE", "fix_breaker"],
+	["WHO GOES THERE?", "Admit a real customer or reject the anomaly.\nTrust the evidence, not the confident voice.", "MOUSE / ADMIT OR REJECT", "check_customer"],
+	["BARRICADE BASH", "Brace the stockroom while something pounds back.\nChase the warning mark before the pressure spikes.", "SPACE + A / D / ARROWS", "hold_door"],
+	["RAT RACE", "Click the real rat three times before the shadows bait you.\nWarm eyes and a long tail are your tell.", "MOUSE / CLICK", "catch_rat"],
+	["SIGNAL HUNT", "Tune three feeds and decide whether to break the rule.\nCamera 4 may reveal the fastest route out.", "MOUSE / DRAG OR ARROWS", "tune_cameras"],
+	["THE VOICE ON LINE 2", "Pick up the impossible call and outsmart the question.\nYour answer changes what the store owns.", "MOUSE / CHOOSE YOUR WORDS", "answer_phone"],
+	["ESCAPE THE SHIFT", "Sign your name, confirm your badge, and bolt.\nThe store gets one last chance to distract you.", "TYPE ALEX / MOUSE", "clock_out"]
 ]
 const CREAM = Color("e6ddb7")
 const GREEN = Color("b8cc83")
@@ -21,6 +21,7 @@ const YELLOW = Color("e7bf5d")
 const RED = Color("d77868")
 const INK = Color("101820")
 const MUTED = Color("819295")
+const PURPLE = Color("bd8fba")
 
 var state: String = "loading"
 var overlay_return: String = "menu"
@@ -35,11 +36,14 @@ var safety: int = 3
 var mistakes: int = 0
 var score: int = 0
 var best_score: int = 0
+var streak: int = 0
+var best_streak: int = 0
 var shift_seconds: float = 0.0
 var state_seconds: float = 0.0
 var total_seconds: float = 0.0
 var last_success: bool = false
 var last_reason: String = ""
+var last_bonus: String = ""
 var notes_seen: int = 0
 var evidence: Dictionary = {}
 var volume: float = 0.65
@@ -162,8 +166,6 @@ func add_button(value: String, rect: Rect2, action: Callable, color: Color = GRE
 
 func show_loading() -> void:
 	clear_ui()
-	text_ui("THE LAST STOP", Rect2(75, 70, 600, 70), 55)
-	text_ui("A NIGHT SHIFT IS WAITING FOR YOU.", Rect2(79, 140, 600, 45), 21, YELLOW)
 
 func show_menu() -> void:
 	end_game_node()
@@ -180,7 +182,7 @@ func show_menu() -> void:
 	title_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(title_art)
 	text_ui("THE GRAVEYARD SHIFT", Rect2(82, 278, 445, 38), 26, YELLOW)
-	text_ui("Your shift ends at 6 AM.\nThe store does not.", Rect2(84, 329, 410, 65), 24)
+	text_ui("Your shift ends at 6 AM.\nThe store does not.\n\nChain quick clears for streak bonuses.", Rect2(84, 329, 410, 95), 24)
 	add_button("NEW SHIFT", Rect2(82, 418, 440, 58), show_briefing)
 	add_button("HOW TO SURVIVE", Rect2(82, 489, 440, 48), show_instructions)
 	add_button("SETTINGS", Rect2(82, 550, 213, 46), func(): show_settings("menu"))
@@ -192,8 +194,8 @@ func show_instructions() -> void:
 	switch_to("instructions")
 	sheet(Rect2(90, 58, 1100, 601))
 	text_ui("EMPLOYEE ORIENTATION", Rect2(125, 80, 1000, 55), 38, YELLOW)
-	text_ui("Complete the shift with at least one safety mark. Every mistake stays with the store.\nThe clock advances between assignments. Read the old notes. Watch what changes.\nESC pauses • Mouse and keyboard • Your badge: ALEX / 0417", Rect2(125, 149, 1000, 125), 23)
-	text_ui("OPTIONAL PRACTICE — choose a station, with no score or safety cost", Rect2(125, 298, 1000, 35), 19, MUTED)
+	text_ui("This is an arcade shift: chase streaks, spot impossible clues, and take risky shortcuts for bonus points.\nThe clock advances between challenges. Read the old notes. Watch what changes.\nESC pauses • Mouse and keyboard • Your badge: ALEX / 0417", Rect2(125, 149, 1000, 125), 23)
+	text_ui("OPTIONAL PRACTICE - choose a station, with no score or safety cost", Rect2(125, 298, 1000, 35), 19, MUTED)
 	for n in range(10):
 		var id = n
 		add_button("%02d / %s" % [n + 1, TASKS[n][0]], Rect2(125 + (n % 2) * 512, 348 + (n / 2) * 48, 490, 40), func(): start_practice(id), GREEN)
@@ -244,7 +246,7 @@ func show_briefing() -> void:
 	sheet(Rect2(290, 48, 700, 623), Color("d5cdb0"), Color("695d47"))
 	text_ui("MANAGER'S INSTRUCTIONS", Rect2(333, 85, 620, 48), 34, INK)
 	text_ui("FINISH EVERYTHING BEFORE 6:00 AM.\n\nDO NOT OPEN THE BACK DOOR.\n\nDO NOT ANSWER THE PHONE.\n\nDO NOT LOOK AT CAMERA 4\nAFTER 3:33 AM.", Rect2(333, 165, 600, 300), 27, INK)
-	text_ui("Your badge: ALEX / 0417\nThree safety marks. Eighteen assignments. One exit.\nAn unhurried shift is about 8–12 minutes.", Rect2(333, 496, 600, 80), 20, Color("49483e"))
+	text_ui("Your badge: ALEX / 0417\nThree safety marks. Eighteen arcade challenges. One exit.\nChain quick clears for bigger streak bonuses.", Rect2(333, 496, 600, 80), 20, Color("49483e"))
 	add_button("TAKE THE KEYS", Rect2(333, 594, 605, 51), new_shift)
 
 func new_shift() -> void:
@@ -255,6 +257,8 @@ func new_shift() -> void:
 	safety = 3
 	mistakes = 0
 	score = 0
+	streak = 0
+	best_streak = 0
 	index = 0
 	notes_seen = 0
 	evidence.clear()
@@ -280,6 +284,8 @@ func start_practice(id: int) -> void:
 	safety = 3
 	mistakes = 0
 	score = 0
+	streak = 0
+	best_streak = 0
 	evidence = {"camera4": true}
 	audio.begin()
 	show_intro()
@@ -288,11 +294,11 @@ func show_intro() -> void:
 	switch_to("intro")
 	var data = TASKS[schedule[index]]
 	sheet(Rect2(255, 156, 770, 409), Color("d5cdb0"), Color("6e6049"))
-	text_ui("TASK %02d  /  %s" % [schedule[index] + 1, "OVERTIME VARIATION" if index >= 8 else "SHIFT DUTY"], Rect2(295, 185, 680, 43), 21, Color("615745"))
+	text_ui("ARCADE CHALLENGE %02d  /  %s" % [schedule[index] + 1, "HARD MODE" if index >= 8 else "NIGHT SHIFT"], Rect2(295, 185, 680, 43), 21, Color("615745"))
 	text_ui(data[0], Rect2(295, 243, 680, 59), 36, INK)
 	text_ui(data[1], Rect2(295, 327, 680, 113), 26, INK)
 	text_ui(data[2], Rect2(295, 467, 680, 40), 23, Color("615745"))
-	text_ui("Begin in a moment. Breathe.", Rect2(295, 514, 680, 30), 18, Color("615745"))
+	text_ui("QUICK CLEAR = STREAK BONUS     •     RISKY CLUE = EXTRA SCORE", Rect2(295, 514, 680, 30), 18, Color("615745"))
 	audio.play("paper")
 
 func launch_task() -> void:
@@ -313,9 +319,20 @@ func on_task_completed(success: bool, reason: String) -> void:
 	if state != "task": return
 	last_success = success
 	last_reason = reason
+	last_bonus = ""
 	if not practice:
-		if success: score += 500 + int(maxf(0, game.time_left) * 12) + (150 if index >= 8 else 0)
+		if success:
+			streak += 1
+			best_streak = maxi(best_streak, streak)
+			var quick_bonus = 500 + int(maxf(0, game.time_left) * 12)
+			var risk_bonus = 300 if index >= 8 and evidence.has("camera4") else 0
+			var multiplier = 1.0 + mini(streak - 1, 4) * 0.15
+			var earned = int((quick_bonus + risk_bonus + (150 if index >= 8 else 0)) * multiplier)
+			score += earned
+			last_bonus = "ARCADE BONUS +%d     STREAK x%d" % [earned, streak]
+			if risk_bonus > 0: last_bonus += "     CAMERA 4 RISK +300"
 		else:
+			streak = 0
 			safety -= 1
 			mistakes += 1
 	audio.escalate(float(index) / 17.0, mistakes)
@@ -323,7 +340,7 @@ func on_task_completed(success: bool, reason: String) -> void:
 	sheet(Rect2(247, 192, 786, 328), Color("101820f9"), GREEN if success else RED)
 	text_ui("DUTY COMPLETE" if success else "INCIDENT RECORDED", Rect2(285, 217, 710, 60), 36, GREEN if success else RED)
 	text_ui(reason, Rect2(285, 290, 710, 110), 23)
-	var detail = "The store is checking your work."
+	var detail = last_bonus if success and not practice else "The store is checking your work."
 	if not success and not practice:
 		detail = ["The lights no longer reach the corners.", "Someone else is waiting outside.", "An empty portrait has your name."][mini(mistakes - 1, 2)]
 	text_ui(detail, Rect2(285, 420, 710, 70), 22, YELLOW)
@@ -498,7 +515,10 @@ func art(key: String, rect: Rect2, tint: Color = Color.WHITE) -> void:
 		draw_texture_rect(textures[path], rect, false, tint)
 
 func _draw() -> void:
-	var front = state in ["loading", "menu", "instructions", "credits", "briefing"] or (state == "settings" and not is_paused)
+	if state == "loading":
+		_draw_loading_screen()
+		return
+	var front = state in ["menu", "instructions", "credits", "briefing"] or (state == "settings" and not is_paused)
 	art("exterior" if front else "interior", Rect2(0, 0, 1280, 720))
 	if not front:
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.015, 0.025, 0.04, minf(0.15 + mistakes * 0.12, 0.5)))
@@ -507,15 +527,6 @@ func _draw() -> void:
 			paint_text("WE REMEMBER", Vector2(1037, 677), 15, Color("997f9c"))
 		if not reduced_motion and mistakes > 0 and sin(total_seconds * 1.7) > 0.96:
 			draw_rect(Rect2(0, 0, 1280, 720), Color(0, 0, 0, 0.12))
-	if state == "loading":
-		if not reduced_motion:
-			for n in range(55):
-				var x = float((n * 67) % 1280)
-				var y = fmod(n * 97 + total_seconds * 220, 720)
-				draw_line(Vector2(x, y), Vector2(x - 8, y + 27), Color("71858a55"), 2)
-		draw_rect(Rect2(79, 535, 510, 89), CREAM)
-		draw_rect(Rect2(93, 550, load_progress * 482, 24), INK)
-		paint_text("%03d%%  /  %s" % [int(load_progress * 100), ["Preparing your shift...", "Counting the exits...", "One employee expected."][mini(2, int(state_seconds))]], Vector2(94, 603), 20, INK)
 	if state in ["intro", "task", "result", "patrol", "note", "pause", "notebook"] or is_paused:
 		draw_rect(Rect2(0, 0, 1280, 99), Color("101820f5"))
 		draw_line(Vector2(30, 99), Vector2(1250, 99), Color("5d6655"), 2)
@@ -526,9 +537,11 @@ func _draw() -> void:
 		for n in range(3):
 			draw_rect(Rect2(591 + n * 45, 46, 31, 24), GREEN if n < safety else Color("413c43"))
 			paint_text("+" if n < safety else "×", Vector2(600 + n * 45, 65), 20, INK)
-		paint_text("SCORE", Vector2(831, 32), 15, MUTED)
-		paint_text("%05d" % score, Vector2(831, 65), 27)
-		paint_text("DUTY %02d / %02d" % [index + 1, schedule.size()], Vector2(1010, 54), 18, MUTED)
+		paint_text("STREAK", Vector2(831, 32), 15, MUTED)
+		paint_text("x%02d" % streak, Vector2(831, 65), 27, YELLOW if streak > 1 else CREAM)
+		paint_text("SCORE", Vector2(929, 32), 15, MUTED)
+		paint_text("%05d" % score, Vector2(929, 65), 27)
+		paint_text("DUTY %02d / %02d" % [index + 1, schedule.size()], Vector2(1073, 54), 16, MUTED)
 		if not schedule.is_empty():
 			paint_text(TASKS[schedule[index]][0], Vector2(141, 134), 24, YELLOW)
 		if state == "task" and is_instance_valid(game):
@@ -553,3 +566,30 @@ func _draw() -> void:
 		paint_text("ALEX / 0417", Vector2(845, 516), 25, CREAM)
 		if total_seconds < float(get_meta("scare_until", 0)):
 			art("monster", Rect2(500 + int(get_meta("scare_side", 0)) * 70, 80, 420, 640))
+
+func _draw_loading_screen() -> void:
+	# A deliberate arcade briefing replaces the old generic exterior backdrop.
+	draw_rect(Rect2(0, 0, 1280, 720), INK)
+	draw_rect(Rect2(42, 36, 1196, 648), Color("13252c"), false)
+	draw_rect(Rect2(42, 36, 1196, 648), Color("4c685f"), false, 3.0)
+	for n in range(12):
+		var x = 78.0 + n * 101.0
+		var drift = 0.0 if reduced_motion else sin(total_seconds * 1.8 + n) * 7.0
+		draw_line(Vector2(x, 63 + drift), Vector2(x + 38, 63 + drift), Color("b8cc8350"), 3.0)
+	paint_text("CLOCK OUT ALIVE", Vector2(88, 133), 52, CREAM)
+	paint_text("LOADING YOUR NIGHT-SHIFT ARCADE", Vector2(91, 169), 22, YELLOW)
+	var preview_id = mini(2, int(state_seconds * 1.2))
+	var preview = TASKS[preview_id]
+	draw_rect(Rect2(88, 218, 1104, 270), Color("0d171e"))
+	draw_rect(Rect2(88, 218, 1104, 270), Color("b8cc83"), false, 3.0)
+	paint_text("NEXT CHALLENGE PREVIEW", Vector2(122, 260), 19, GREEN)
+	paint_text("%02d  /  %s" % [preview_id + 1, preview[0]], Vector2(122, 320), 40, CREAM)
+	var preview_lines = str(preview[1]).split("\n")
+	for line_index in range(preview_lines.size()):
+		paint_text(str(preview_lines[line_index]), Vector2(124, 371 + line_index * 32), 23, CREAM)
+	paint_text("YOU WILL USE: " + str(preview[2]), Vector2(124, 456), 18, YELLOW)
+	draw_rect(Rect2(88, 528, 1104, 74), Color("d5cdb0"))
+	draw_rect(Rect2(106, 548, 1068, 22), Color("273a3d"))
+	draw_rect(Rect2(106, 548, 1068 * load_progress, 22), GREEN)
+	paint_text("%03d%%  /  %s" % [int(load_progress * 100), ["WARMING UP THE SCANNER...", "COUNTING THE EXITS...", "FINDING THE WEIRD PART..."][mini(2, int(state_seconds))]], Vector2(106, 590), 18, INK)
+	paint_text("FUN RULE: CHAIN QUICK CLEARS FOR STREAK BONUSES. TAKE RISKS FOR CLUES.", Vector2(91, 649), 18, PURPLE)

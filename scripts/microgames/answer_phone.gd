@@ -37,7 +37,7 @@ func _handle(event: InputEvent) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("171d22"), PURPLE)
-	label_at("TASK 09  /  ANSWER THE PHONE", Vector2(170, 188), 27, YELLOW)
+	label_at("THE VOICE ON LINE 2", Vector2(170, 188), 27, YELLOW)
 	label_at("MANAGER RULE: DO NOT ANSWER THE PHONE.", Vector2(170, 222), 23, RED)
 	if not answered:
 		sprite("phone", Rect2(464, 246, 340, 150))

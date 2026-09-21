@@ -69,7 +69,7 @@ func _handle(event: InputEvent) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("182629"))
-	label_at("FRONT DOOR / CHECK THE CUSTOMER", Vector2(175, 191), 23, YELLOW)
+	label_at("WHO GOES THERE? / SPOT THE ANOMALY", Vector2(175, 191), 23, YELLOW)
 	label_at("%d / 3 checked  •  Match the ID, reflection and shadow" % correct, Vector2(175, 227), 21)
 	panel(Rect2(180, 249, 265, 281), Color("2a3b40"), BLUE)
 	panel(Rect2(462, 249, 224, 281), Color("314047"), BLUE)

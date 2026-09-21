@@ -82,8 +82,8 @@ func _shift_empty_shelves() -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("1c272b"))
-	label_at("AISLE 4  /  NOTHING BEHIND YOU", Vector2(175, 191), 24, YELLOW)
-	label_at("DRAG products to matching shelf labels  •  %d / 6 stocked  •  %d / 3 errors" % [stocked, wrong], Vector2(175, 227), 20)
+	label_at("SHELF SHUFFLE  /  NOTHING BEHIND YOU", Vector2(175, 191), 24, YELLOW)
+	label_at("DRAG products to matching slots  •  %d / 6 landed  •  %d / 3 errors" % [stocked, wrong], Vector2(175, 227), 20)
 	var figure_x = 1042 - (floor(elapsed / 5.0) * 34 if not reduced_motion else 30)
 	draw_circle(Vector2(figure_x, 283), 27, Color("131b21"))
 	draw_colored_polygon(PackedVector2Array([Vector2(figure_x - 31, 314), Vector2(figure_x + 23, 313),

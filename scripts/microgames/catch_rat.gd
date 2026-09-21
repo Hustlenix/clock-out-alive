@@ -73,8 +73,8 @@ func draw_rat(point: Vector2, real: bool) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("243230"), BLUE)
-	label_at("CATCH THE REAL RAT THREE TIMES", Vector2(170, 190), 26, YELLOW)
-	label_at("Click the pink nose / long tail. Three shadow catches fail the task.", Vector2(170, 221), 22)
+	label_at("RAT RACE / THREE HITS", Vector2(170, 190), 26, YELLOW)
+	label_at("Click the pink nose / long tail. Shadows are bait.", Vector2(170, 221), 22)
 	for y in range(265, 531, 55):
 		draw_line(Vector2(160, y), Vector2(1120, y + 8), Color("344340"), 2)
 	for x in range(185, 1100, 125):

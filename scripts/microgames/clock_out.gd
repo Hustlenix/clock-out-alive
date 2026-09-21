@@ -86,7 +86,7 @@ func _handle(event: InputEvent) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("20272a"), BLUE)
-	label_at("5:59 AM  /  EMPLOYEE SIGN-OUT", Vector2(170, 188), 28, YELLOW)
+	label_at("5:59 AM  /  ESCAPE THE SHIFT", Vector2(170, 188), 28, YELLOW)
 	label_at("Your signature stays on your payroll card. Do not speak it to the store.", Vector2(170, 224), 21, CREAM)
 	label_at("1. TYPE YOUR NAME", Vector2(216, 273), 21, CREAM)
 	panel(name_rect, INK, YELLOW if field == 0 else BLUE)

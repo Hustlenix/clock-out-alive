@@ -93,8 +93,8 @@ func _draw() -> void:
 	sprite("mop", Rect2(mop - Vector2(48, 106), Vector2(128, 128)))
 	# The long handle may leave the floor, but never obscures the control instructions.
 	draw_rect(Rect2(142, 152, 996, 91), Color("1a292b"))
-	label_at("WET FLOOR  /  KEEP MOVING", Vector2(175, 191), 24, YELLOW)
-	label_at("WASD / ARROWS to mop  •  %d / %d puddles cleaned" % [cleaned, spills.size()], Vector2(175, 228), 22)
+	label_at("SHADOW SLALOM  /  KEEP MOVING", Vector2(175, 191), 24, YELLOW)
+	label_at("WASD / ARROWS to sweep  •  %d / %d puddles cleared" % [cleaned, spills.size()], Vector2(175, 228), 22)
 	if danger > 0.01:
 		panel(Rect2(810, 171, 284, 20), INK, RED)
 		draw_rect(Rect2(813, 174, 278 * danger, 14), RED)

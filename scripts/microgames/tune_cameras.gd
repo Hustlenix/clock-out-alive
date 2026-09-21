@@ -88,7 +88,7 @@ func _handle(event: InputEvent) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("141f23"), BLUE)
-	label_at("TUNE CAMERAS 1–3, THEN FILE REPORT", Vector2(170, 187), 26, YELLOW)
+	label_at("SIGNAL HUNT 1–3, THEN FILE REPORT", Vector2(170, 187), 26, YELLOW)
 	label_at("Camera 4 is optional. Manager: DO NOT LOOK AFTER 3:33.", Vector2(170, 218), 22, PURPLE)
 	panel(Rect2(176, 239, 681, 225), Color("142c28"), GREEN)
 	var strength: float = 1.0 - clampf(absf(frequencies[channel] - targets[channel]) / 45.0, 0.0, 1.0)

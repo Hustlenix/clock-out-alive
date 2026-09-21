@@ -10,3 +10,9 @@
 - Automated QA: first five microgames 342/342 assertions; last five 261/261; integration 138/138; full input-driven shift 94/94. Browser smoke checks verified the loading screen, menu, real stock dragging, and typed ALEX/0417 sign-out.
 - Exported the Web build to `docs/index.html` and the Windows preset to `builds/windows/ClockOutAlive.exe`.
 - Actual active development elapsed time was not tracked reliably across resumed sessions. The six-hour brief requirement is therefore recorded as unclaimed rather than fabricated.
+
+## 2026-09-21 — feedback pass
+
+- Replaced the generic loading backdrop with a dark arcade briefing card that previews the upcoming challenge, shows its controls and goal, and cycles through the first three challenge teasers while assets load.
+- Reframed the task cards and HUD around arcade challenges: quick-clear bonuses, streak multipliers, optional Camera 4 risk bonus, and energetic names such as Shadow Slalom, Voltage Memory, Rat Race, and Escape the Shift.
+- Kept the evidence-driven horror and deliberate rule contradiction intact while making the player’s moment-to-moment goal more playful and score-driven.

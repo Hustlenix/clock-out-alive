@@ -85,8 +85,8 @@ func _handle(event: InputEvent) -> void:
 
 func _draw() -> void:
 	panel(Rect2(140, 150, 1000, 440), Color("11191c"), BLUE)
-	label_at("KEEP IT CLOSED", Vector2(170, 187), 26, YELLOW)
-	label_at("Hold SPACE / mouse   •   A / D or 1 / 2 / 3 to reposition", Vector2(170, 220), 22)
+	label_at("BARRICADE BASH", Vector2(170, 187), 26, YELLOW)
+	label_at("Hold SPACE / mouse   •   Chase the warning mark with A / D", Vector2(170, 220), 22)
 	panel(Rect2(270, 242, 535, 205), Color("3a4543"), CREAM)
 	sprite("door", Rect2(438, 242, 137, 205), Color(1, 1, 1, 0.45))
 	for line_index in range(7):
