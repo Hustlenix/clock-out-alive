@@ -1,0 +1,24 @@
+{
+  "sample_rate": 22050,
+  "channels": 1,
+  "durations_seconds": {
+    "rain": 12.0,
+    "hum": 8.0,
+    "buzz": 8.0,
+    "music": 24.0,
+    "tension": 12.0,
+    "scanner": 0.11,
+    "footstep": 0.23,
+    "breaker": 0.32,
+    "phone": 2.0,
+    "bang": 1.0,
+    "scrape": 1.65,
+    "breath": 3.0,
+    "paper": 0.65,
+    "printer": 2.5,
+    "success": 1.06,
+    "failure": 1.21,
+    "winner": 2.2,
+    "death": 3.0
+  }
+}

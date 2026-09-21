@@ -1,0 +1,117 @@
+{
+  "images": 30,
+  "audio_files": 18,
+  "all_image_formats_dimensions_and_source_pngs_valid": true,
+  "all_audio_formats_and_amplitudes_valid": true,
+  "audio": [
+    {
+      "name": "bang.wav",
+      "seconds": 1.0,
+      "peak": 0.3142,
+      "rms": 0.0445
+    },
+    {
+      "name": "breaker.wav",
+      "seconds": 0.32,
+      "peak": 0.3599,
+      "rms": 0.0284
+    },
+    {
+      "name": "breath.wav",
+      "seconds": 3.0,
+      "peak": 0.2128,
+      "rms": 0.0302
+    },
+    {
+      "name": "buzz.wav",
+      "seconds": 8.0,
+      "peak": 0.055,
+      "rms": 0.0175
+    },
+    {
+      "name": "death.wav",
+      "seconds": 3.0,
+      "peak": 0.1838,
+      "rms": 0.0659
+    },
+    {
+      "name": "failure.wav",
+      "seconds": 1.21,
+      "peak": 0.1701,
+      "rms": 0.0442
+    },
+    {
+      "name": "footstep.wav",
+      "seconds": 0.23,
+      "peak": 0.1367,
+      "rms": 0.0244
+    },
+    {
+      "name": "hum.wav",
+      "seconds": 8.0,
+      "peak": 0.1038,
+      "rms": 0.0572
+    },
+    {
+      "name": "music.wav",
+      "seconds": 24.0,
+      "peak": 0.2256,
+      "rms": 0.0302
+    },
+    {
+      "name": "paper.wav",
+      "seconds": 0.65,
+      "peak": 0.3813,
+      "rms": 0.0535
+    },
+    {
+      "name": "phone.wav",
+      "seconds": 2.0,
+      "peak": 0.1709,
+      "rms": 0.0516
+    },
+    {
+      "name": "printer.wav",
+      "seconds": 2.5,
+      "peak": 0.2939,
+      "rms": 0.0344
+    },
+    {
+      "name": "rain.wav",
+      "seconds": 12.0,
+      "peak": 0.3111,
+      "rms": 0.0619
+    },
+    {
+      "name": "scanner.wav",
+      "seconds": 0.11,
+      "peak": 0.15,
+      "rms": 0.077
+    },
+    {
+      "name": "scrape.wav",
+      "seconds": 1.65,
+      "peak": 0.1716,
+      "rms": 0.0274
+    },
+    {
+      "name": "success.wav",
+      "seconds": 1.06,
+      "peak": 0.201,
+      "rms": 0.0469
+    },
+    {
+      "name": "tension.wav",
+      "seconds": 12.0,
+      "peak": 0.0703,
+      "rms": 0.0304
+    },
+    {
+      "name": "winner.wav",
+      "seconds": 2.2,
+      "peak": 0.1371,
+      "rms": 0.042
+    }
+  ],
+  "visual_qa": "Exterior, interior, logo, winner, death, customer and living product inspected visually; contact sheet generated for remaining sprites. Audio file data validated; listening quality was not evaluated by this script."
+}

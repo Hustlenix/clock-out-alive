@@ -1,0 +1,152 @@
+{
+  "exterior": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/exterior.png"
+  },
+  "ending_winner": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/ending_winner.png"
+  },
+  "interior": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/interior.png"
+  },
+  "ending_death": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/ending_death.png"
+  },
+  "logo": {
+    "width": 620,
+    "height": 170,
+    "runtime": "assets/art/logo.png"
+  },
+  "player": {
+    "width": 160,
+    "height": 240,
+    "runtime": "assets/art/player.png"
+  },
+  "customer": {
+    "width": 160,
+    "height": 240,
+    "runtime": "assets/art/customer.png"
+  },
+  "monster": {
+    "width": 160,
+    "height": 240,
+    "runtime": "assets/art/monster.png"
+  },
+  "product_milk": {
+    "width": 96,
+    "height": 128,
+    "runtime": "assets/art/product_milk.png"
+  },
+  "product_cereal": {
+    "width": 96,
+    "height": 128,
+    "runtime": "assets/art/product_cereal.png"
+  },
+  "product_can": {
+    "width": 96,
+    "height": 128,
+    "runtime": "assets/art/product_can.png"
+  },
+  "product_living": {
+    "width": 96,
+    "height": 128,
+    "runtime": "assets/art/product_living.png"
+  },
+  "clipboard": {
+    "width": 160,
+    "height": 200,
+    "runtime": "assets/art/clipboard.png"
+  },
+  "phone": {
+    "width": 160,
+    "height": 160,
+    "runtime": "assets/art/phone.png"
+  },
+  "door": {
+    "width": 160,
+    "height": 240,
+    "runtime": "assets/art/door.png"
+  },
+  "rat": {
+    "width": 160,
+    "height": 100,
+    "runtime": "assets/art/rat.png"
+  },
+  "mop": {
+    "width": 160,
+    "height": 160,
+    "runtime": "assets/art/mop.png"
+  },
+  "breaker": {
+    "width": 160,
+    "height": 180,
+    "runtime": "assets/art/breaker.png"
+  },
+  "cctv": {
+    "width": 240,
+    "height": 200,
+    "runtime": "assets/art/cctv.png"
+  },
+  "shelf": {
+    "width": 240,
+    "height": 240,
+    "runtime": "assets/art/shelf.png"
+  },
+  "freezer": {
+    "width": 240,
+    "height": 240,
+    "runtime": "assets/art/freezer.png"
+  },
+  "checkout": {
+    "width": 320,
+    "height": 180,
+    "runtime": "assets/art/checkout.png"
+  },
+  "scanner": {
+    "width": 200,
+    "height": 110,
+    "runtime": "assets/art/scanner.png"
+  },
+  "safety": {
+    "width": 64,
+    "height": 64,
+    "runtime": "assets/art/safety.png"
+  },
+  "cursor": {
+    "width": 32,
+    "height": 32,
+    "runtime": "assets/art/cursor.png"
+  },
+  "button": {
+    "width": 220,
+    "height": 70,
+    "runtime": "assets/art/button.png"
+  },
+  "note": {
+    "width": 360,
+    "height": 260,
+    "runtime": "assets/art/note.png"
+  },
+  "noticeboard": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/noticeboard.png"
+  },
+  "anomaly": {
+    "width": 160,
+    "height": 240,
+    "runtime": "assets/art/anomaly.png"
+  },
+  "loading": {
+    "width": 640,
+    "height": 360,
+    "runtime": "assets/art/loading.png"
+  }
+}
