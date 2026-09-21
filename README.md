@@ -20,6 +20,7 @@ The browser export lives in `docs/index.html`. A Windows desktop export is writt
 
 - Ten input-driven arcade microgames, each with a success path, failure path, timer pressure, quick-clear scoring, feedback, and a guarded single completion signal.
 - Eighteen-assignment shift: the first eight challenges return with harder variations, followed by the phone contradiction and final sign-out.
+- Between assignments, a dedicated next-challenge card previews the objective, controls, quick-clear bonus, countdown, clipboard clue, and READY NOW jump-in without covering the play space with debug text.
 - Three Employee Safety points. Failures alter the rest of the shift through darker ambience, silhouettes, harder variations, and altered store feedback.
 - Eight previous-employee notes, progressive contradictions, optional Camera 4 evidence, and an inferable phone answer.
 - Loading screen, manager briefing, pause/restart, settings, volume, reduced motion, local best score, practice stations, winner scene, death scene, credits, and replay.

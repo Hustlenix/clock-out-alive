@@ -53,6 +53,11 @@ func run() -> void:
 	check(main.safety == 3 and main.score == 0 and main.index == 0 and main.mistakes == 0, "new shift initializes resources")
 	check(main.schedule.size() == 18, "full shift contains18 assignments")
 	check(main.schedule[7] == 7 and main.schedule[15] == 7 and main.schedule[16] == 8 and main.schedule[17] == 9, "cameras precede phone and clockout")
+	main.index = 1
+	main.show_patrol()
+	check(main.state == "patrol" and is_instance_valid(main.review_label) and main.review_label.text.contains("READY NOW"), "between-assignment screen presents a clear next-challenge card")
+	check(is_instance_valid(main.patrol_flavor) and main.ui.get_child_count() >= 8, "intermission card owns its own readable controls")
+	main.new_shift()
 
 	# Hold-door pause uses real SceneTree pausing, not a mocked timer.
 	main.index = 5

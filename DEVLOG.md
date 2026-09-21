@@ -15,4 +15,5 @@
 
 - Replaced the generic loading backdrop with a dark arcade briefing card that previews the upcoming challenge, shows its controls and goal, and cycles through the first three challenge teasers while assets load.
 - Reframed the task cards and HUD around arcade challenges: quick-clear bonuses, streak multipliers, optional Camera 4 risk bonus, and energetic names such as Shadow Slalom, Voltage Memory, Rat Race, and Escape the Shift.
+- Rebuilt the between-assignment intermission as a centered next-challenge card. It now keeps the store readable, explains the upcoming game and controls, shows the quick-clear reward, and offers READY NOW, clipboard, and glass-clue actions without stale task HUD overlap.
 - Kept the evidence-driven horror and deliberate rule contradiction intact while making the player’s moment-to-moment goal more playful and score-driven.

@@ -58,6 +58,7 @@ var cursor_texture: Texture2D
 var ending_reveal: bool = false
 var intro_seconds: float = 2.5
 var review_label: Label
+var patrol_flavor: Label
 var menu_button: Button
 var trace: Array[String] = []
 
@@ -109,6 +110,7 @@ func clear_ui() -> void:
 		ui.remove_child(child)
 		child.queue_free()
 	review_label = null
+	patrol_flavor = null
 
 func switch_to(next: String) -> void:
 	state = next
@@ -374,13 +376,23 @@ func show_note() -> void:
 
 func show_patrol() -> void:
 	switch_to("patrol")
-	text_ui("BETWEEN ASSIGNMENTS", Rect2(73, 155, 640, 56), 30, YELLOW)
-	text_ui("The store keeps its own schedule.", Rect2(75, 211, 650, 43), 22)
-	add_button("READ THE CLIPBOARD", Rect2(73, 515, 350, 48), func(): show_notebook("patrol"))
-	add_button("LOOK TOWARD THE GLASS", Rect2(73, 577, 350, 48), func():
-		text_ui("%s" % ("Two people. Neither is breathing on the glass." if mistakes > 0 else "Your reflection turns back a moment after you do."), Rect2(465, 528, 690, 90), 24, YELLOW)
-		audio.play("footstep"))
-	review_label = text_ui("", Rect2(73, 282, 740, 40), 23, GREEN)
+	var next_data = TASKS[schedule[index]]
+	sheet(Rect2(180, 112, 920, 525), Color("101820f5"), Color("b8cc83"))
+	text_ui("BETWEEN ASSIGNMENTS  /  NEXT UP", Rect2(230, 145, 820, 38), 21, GREEN)
+	text_ui(next_data[0], Rect2(230, 193, 820, 62), 42, YELLOW)
+	text_ui(next_data[1], Rect2(230, 275, 805, 105), 25, CREAM)
+	text_ui("CONTROLS", Rect2(230, 402, 180, 32), 17, MUTED)
+	text_ui(str(next_data[2]), Rect2(230, 432, 410, 38), 24, CREAM)
+	text_ui("QUICK CLEAR BONUS  /  keep your streak alive", Rect2(650, 402, 390, 70), 19, PURPLE)
+	review_label = text_ui("AUTO START IN 13  /  press READY NOW to jump in", Rect2(230, 485, 810, 32), 18, GREEN)
+	patrol_flavor = text_ui("The store keeps its own schedule. Your move.", Rect2(230, 519, 810, 34), 18, MUTED)
+	add_button("READY NOW", Rect2(230, 572, 245, 44), show_intro, GREEN)
+	add_button("READ THE CLIPBOARD", Rect2(493, 572, 285, 44), func(): show_notebook("patrol"), YELLOW)
+	add_button("LOOK TOWARD THE GLASS", Rect2(796, 572, 244, 44), look_at_glass, MUTED)
+
+func look_at_glass() -> void:
+	if is_instance_valid(patrol_flavor): patrol_flavor.text = "Two people. Neither is breathing on the glass." if mistakes > 0 else "Your reflection turns back a moment after you do."
+	audio.play("footstep")
 
 func show_notebook(return_to: String) -> void:
 	overlay_return = return_to
@@ -495,7 +507,7 @@ func _process(delta: float) -> void:
 		"result":
 			if state_seconds >= 5.0 and not practice: after_result()
 		"patrol":
-			if is_instance_valid(review_label): review_label.text = "NEXT ASSIGNMENT IN %02d  /  inspect the store while you wait" % maxi(0, int(13 - state_seconds))
+			if is_instance_valid(review_label): review_label.text = "AUTO START IN %02d  /  press READY NOW to jump in" % maxi(0, int(13 - state_seconds))
 			if state_seconds >= 13.0: show_intro()
 		"winner", "death":
 			if state_seconds >= 6.0 and not ending_reveal: ending_ui()
@@ -522,12 +534,13 @@ func _draw() -> void:
 	art("exterior" if front else "interior", Rect2(0, 0, 1280, 720))
 	if not front:
 		draw_rect(Rect2(0, 0, 1280, 720), Color(0.015, 0.025, 0.04, minf(0.15 + mistakes * 0.12, 0.5)))
+		if state == "patrol": draw_rect(Rect2(0, 0, 1280, 720), Color(0, 0, 0, 0.42))
 		for n in range(mistakes): art("monster", Rect2(1100 - n * 80, 244, 100, 220), Color("818096"))
 		if index >= 8:
 			paint_text("WE REMEMBER", Vector2(1037, 677), 15, Color("997f9c"))
 		if not reduced_motion and mistakes > 0 and sin(total_seconds * 1.7) > 0.96:
 			draw_rect(Rect2(0, 0, 1280, 720), Color(0, 0, 0, 0.12))
-	if state in ["intro", "task", "result", "patrol", "note", "pause", "notebook"] or is_paused:
+	if state in ["intro", "task", "result", "note", "pause", "notebook"] or is_paused:
 		draw_rect(Rect2(0, 0, 1280, 99), Color("101820f5"))
 		draw_line(Vector2(30, 99), Vector2(1250, 99), Color("5d6655"), 2)
 		paint_text("THE LAST STOP", Vector2(32, 37), 22, YELLOW)
