@@ -1,5 +1,14 @@
 # DEVLOG — CLOCK OUT ALIVE
 
+## 2026-09-22 — release audit
+
+- Fixed pause rebuilding screens and resetting countdowns; retained the original controls through nested clipboard/settings flows, including notes and results.
+- Added a complete collected-note archive, immediate READY NOW gameplay, button text fitting, correctly sized menu artwork, and earlier shelf rearrangement on the normal second round.
+- Reset audio pitch/escalation on replay and stop ambience at the menu. Released the custom cursor on shutdown after a native-render audit exposed a texture leak.
+- Added regression coverage: 158 integration assertions and 988 rendered-control layout assertions. Existing microgame suites pass 342 and 261 assertions; the full input-driven shift passes 94.
+- Visually reviewed real native OpenGL captures of the menu, intermission, clipboard, winner, and death screens. Added reproducible tested exports, engine notices, and release packaging instructions.
+- Actual active elapsed development time remains unclaimed; no artificial time entries were added.
+
 ## 2026-09-21
 
 - Built the Godot 4.7.1 Compatibility project, main scene, loading/menu/briefing flow, schedule, HUD, pause, settings, persistence, notes, endings, credits, and replay.

@@ -54,7 +54,7 @@ func _handle(event: InputEvent) -> void:
 				stocked += 1
 				sound_requested.emit("scanner")
 				feedback = "%d / 6 shelved. Read the labels, even if the shelves move." % stocked
-				if difficulty >= 2 and stocked == 3 and not shifted:
+				if difficulty >= 1 and stocked == 3 and not shifted:
 					_shift_empty_shelves()
 				if stocked == items.size():
 					finish(true, "Aisle stocked. The person behind the shelf did not buy anything.")

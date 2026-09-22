@@ -61,6 +61,11 @@ var review_label: Label
 var patrol_flavor: Label
 var menu_button: Button
 var trace: Array[String] = []
+var paused_ui: Control
+var paused_review: Label
+var paused_flavor: Label
+var patrol_return_seconds: float = 0.0
+var notebook_page: int = 0
 
 func _ready() -> void:
 	process_mode = Node.PROCESS_MODE_ALWAYS
@@ -90,6 +95,10 @@ func configure_inputs() -> void:
 	if ResourceLoader.exists("res://assets/art/cursor.png"):
 		cursor_texture = load("res://assets/art/cursor.png")
 		Input.set_custom_mouse_cursor(cursor_texture)
+
+func _exit_tree() -> void:
+	Input.set_custom_mouse_cursor(null)
+	cursor_texture = null
 
 func read_save() -> void:
 	var save = ConfigFile.new()
@@ -146,10 +155,14 @@ func sheet(rect: Rect2, color: Color = INK, border: Color = MUTED) -> void:
 func add_button(value: String, rect: Rect2, action: Callable, color: Color = GREEN) -> Button:
 	var control = Button.new()
 	control.text = value
+	control.clip_text = true
 	control.position = rect.position
 	control.size = rect.size
 	control.focus_mode = Control.FOCUS_ALL
-	control.add_theme_font_size_override("font_size", 22)
+	var button_size = 22
+	while button_size > 14 and font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, button_size).x > rect.size.x - 40:
+		button_size -= 1
+	control.add_theme_font_size_override("font_size", button_size)
 	control.add_theme_color_override("font_color", color)
 	var style = StyleBoxFlat.new()
 	style.bg_color = Color("172429")
@@ -170,21 +183,23 @@ func show_loading() -> void:
 	clear_ui()
 
 func show_menu() -> void:
+	discard_pause_ui()
 	end_game_node()
+	audio.silence()
 	is_paused = false
 	get_tree().paused = false
 	switch_to("menu")
 	sheet(Rect2(48, 45, 520, 620), Color("101820ec"), Color("405350"))
 	text_ui("THE LAST STOP PRESENTS", Rect2(82, 67, 440, 35), 18, GREEN)
 	var title_art = TextureRect.new()
+	title_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_art.texture = load("res://assets/art/logo.png")
 	title_art.position = Vector2(77, 133)
 	title_art.size = Vector2(472, 130)
-	title_art.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
 	title_art.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	ui.add_child(title_art)
 	text_ui("THE GRAVEYARD SHIFT", Rect2(82, 278, 445, 38), 26, YELLOW)
-	text_ui("Your shift ends at 6 AM.\nThe store does not.\n\nChain quick clears for streak bonuses.", Rect2(84, 329, 410, 95), 24)
+	text_ui("Your shift ends at 6 AM.\nThe store does not.", Rect2(84, 329, 410, 80), 24)
 	add_button("NEW SHIFT", Rect2(82, 418, 440, 58), show_briefing)
 	add_button("HOW TO SURVIVE", Rect2(82, 489, 440, 48), show_instructions)
 	add_button("SETTINGS", Rect2(82, 550, 213, 46), func(): show_settings("menu"))
@@ -252,6 +267,7 @@ func show_briefing() -> void:
 	add_button("TAKE THE KEYS", Rect2(333, 594, 605, 51), new_shift)
 
 func new_shift() -> void:
+	discard_pause_ui()
 	end_game_node()
 	get_tree().paused = false
 	is_paused = false
@@ -386,29 +402,38 @@ func show_patrol() -> void:
 	text_ui("QUICK CLEAR BONUS  /  keep your streak alive", Rect2(650, 402, 390, 70), 19, PURPLE)
 	review_label = text_ui("AUTO START IN 13  /  press READY NOW to jump in", Rect2(230, 485, 810, 32), 18, GREEN)
 	patrol_flavor = text_ui("The store keeps its own schedule. Your move.", Rect2(230, 519, 810, 34), 18, MUTED)
-	add_button("READY NOW", Rect2(230, 572, 245, 44), show_intro, GREEN)
+	add_button("READY NOW", Rect2(230, 572, 245, 44), launch_task, GREEN)
 	add_button("READ THE CLIPBOARD", Rect2(493, 572, 285, 44), func(): show_notebook("patrol"), YELLOW)
-	add_button("LOOK TOWARD THE GLASS", Rect2(796, 572, 244, 44), look_at_glass, MUTED)
+	add_button("CHECK THE GLASS", Rect2(796, 572, 244, 44), look_at_glass, MUTED)
 
 func look_at_glass() -> void:
 	if is_instance_valid(patrol_flavor): patrol_flavor.text = "Two people. Neither is breathing on the glass." if mistakes > 0 else "Your reflection turns back a moment after you do."
 	audio.play("footstep")
 
 func show_notebook(return_to: String) -> void:
+	if state != "notebook": notebook_page = maxi(0, notes_seen - 1)
+	if return_to == "patrol" and state == "patrol": patrol_return_seconds = state_seconds
 	overlay_return = return_to
 	switch_to("notebook")
 	sheet(Rect2(145, 85, 990, 555), Color("d5cdb0"), Color("695d47"))
 	text_ui("THE CLIPBOARD / KEEP YOUR OWN RECORD", Rect2(185, 114, 915, 45), 29, INK)
 	text_ui("MANAGER\nFinish before six.\nDo not open the back door.\nDo not answer the phone.\nNo Camera 4 after 3:33.", Rect2(185, 184, 420, 244), 24, INK)
-	var clue = "EMPLOYEE 0417 / ALEX\n\n"
-	if notes_seen >= 4: clue += "Camera 4 shows the front exit.\n"
-	if notes_seen >= 5: clue += "Do not lend the store your name.\nTell it when your shift ends.\n"
-	if evidence.get("camera4", false): clue += "OBSERVED: The front door opens at six.\n"
-	if notes_seen == 0: clue += "No previous-employee notes found yet."
-	text_ui(clue, Rect2(638, 184, 460, 340), 23, INK)
+	text_ui("EMPLOYEE 0417 / ALEX\n" + ("OBSERVED: The front door opens at six." if evidence.get("camera4", false) else "Keep the notes. Compare them to the rules."), Rect2(185, 440, 420, 90), 20, INK)
+	if notes_seen == 0:
+		text_ui("No previous-employee notes found yet.", Rect2(638, 184, 450, 140), 23, INK)
+	else:
+		notebook_page = clampi(notebook_page, 0, notes_seen - 1)
+		text_ui("NOTE %d / %d  -  %s" % [notebook_page + 1, notes_seen, STORY.NOTES[notebook_page][0]], Rect2(638, 184, 450, 65), 18, INK)
+		text_ui(STORY.NOTES[notebook_page][1], Rect2(638, 255, 450, 270), 20, INK)
+		if notebook_page > 0:
+			add_button("PREVIOUS NOTE", Rect2(638, 557, 213, 48), func(): notebook_page -= 1; show_notebook(return_to))
+		if notebook_page < notes_seen - 1:
+			add_button("NEXT NOTE", Rect2(867, 557, 213, 48), func(): notebook_page += 1; show_notebook(return_to))
 	add_button("KEEP WORKING", Rect2(185, 557, 400, 48), func():
 		if overlay_return == "pause": show_pause()
-		else: show_patrol())
+		else:
+			show_patrol()
+			state_seconds = patrol_return_seconds)
 
 func show_pause() -> void:
 	if not is_paused:
@@ -416,6 +441,14 @@ func show_pause() -> void:
 		overlay_return = state
 		set_meta("resume_state", state)
 		set_meta("resume_seconds", state_seconds)
+		paused_ui = ui
+		paused_review = review_label
+		paused_flavor = patrol_flavor
+		paused_ui.hide()
+		ui = Control.new()
+		ui.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		ui.z_index = 20
+		add_child(ui)
 		is_paused = true
 		get_tree().paused = true
 	switch_to("pause")
@@ -428,13 +461,26 @@ func show_pause() -> void:
 	add_button("MAIN MENU", Rect2(430, 499, 420, 50), show_menu, MUTED)
 
 func resume_shift() -> void:
+	if not is_paused: return
 	is_paused = false
 	get_tree().paused = false
-	switch_to(str(get_meta("resume_state", "task")))
+	clear_ui()
+	ui.queue_free()
+	ui = paused_ui
+	paused_ui = null
+	ui.show()
+	review_label = paused_review
+	patrol_flavor = paused_flavor
+	state = str(get_meta("resume_state", "task"))
 	state_seconds = float(get_meta("resume_seconds", 0))
-	if state == "task": add_button("II", Rect2(1190, 22, 58, 46), show_pause).focus_mode = Control.FOCUS_NONE
-	elif state == "intro": show_intro()
-	elif state == "patrol": show_patrol()
+	queue_redraw()
+
+func discard_pause_ui() -> void:
+	if is_instance_valid(paused_ui):
+		paused_ui.queue_free()
+	paused_ui = null
+	paused_review = null
+	paused_flavor = null
 
 func end_game_node() -> void:
 	if is_instance_valid(game):
@@ -473,11 +519,12 @@ func optional_scare() -> void:
 func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.pressed and not event.echo and event.keycode == KEY_ESCAPE:
 		if state == "pause": resume_shift()
-		elif state in ["task", "intro", "patrol"]: show_pause()
+		elif is_paused and state in ["settings", "notebook"]: show_pause()
+		elif state in ["task", "intro", "patrol", "note", "result"]: show_pause()
 		get_viewport().set_input_as_handled()
 
 func _notification(what: int) -> void:
-	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and state == "task" and is_inside_tree():
+	if what == NOTIFICATION_WM_WINDOW_FOCUS_OUT and state in ["task", "intro", "patrol", "result"] and is_inside_tree():
 		show_pause()
 
 func _process(delta: float) -> void:
@@ -555,7 +602,7 @@ func _draw() -> void:
 		paint_text("SCORE", Vector2(929, 32), 15, MUTED)
 		paint_text("%05d" % score, Vector2(929, 65), 27)
 		paint_text("DUTY %02d / %02d" % [index + 1, schedule.size()], Vector2(1073, 54), 16, MUTED)
-		if not schedule.is_empty():
+		if not schedule.is_empty() and state in ["intro", "task", "result"]:
 			paint_text(TASKS[schedule[index]][0], Vector2(141, 134), 24, YELLOW)
 		if state == "task" and is_instance_valid(game):
 			paint_text("%02d s" % maxi(0, ceili(game.time_left)), Vector2(1065, 134), 24, RED if game.time_left < 8 else GREEN)
@@ -591,7 +638,7 @@ func _draw_loading_screen() -> void:
 		draw_line(Vector2(x, 63 + drift), Vector2(x + 38, 63 + drift), Color("b8cc8350"), 3.0)
 	paint_text("CLOCK OUT ALIVE", Vector2(88, 133), 52, CREAM)
 	paint_text("LOADING YOUR NIGHT-SHIFT ARCADE", Vector2(91, 169), 22, YELLOW)
-	var preview_id = mini(2, int(state_seconds * 1.2))
+	var preview_id = 0
 	var preview = TASKS[preview_id]
 	draw_rect(Rect2(88, 218, 1104, 270), Color("0d171e"))
 	draw_rect(Rect2(88, 218, 1104, 270), Color("b8cc83"), false, 3.0)

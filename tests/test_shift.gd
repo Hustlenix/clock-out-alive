@@ -59,6 +59,50 @@ func run() -> void:
 	check(is_instance_valid(main.patrol_flavor) and main.ui.get_child_count() >= 8, "intermission card owns its own readable controls")
 	main.new_shift()
 
+	# Preserve actual controls and remaining time through pause/settings, including
+	# narrative screens whose buttons previously vanished when resuming.
+	for screen in ["intro", "patrol", "note", "result"]:
+		match screen:
+			"intro": main.show_intro()
+			"patrol": main.show_patrol()
+			"note": main.show_note()
+			"result":
+				main.launch_task()
+				main.game.set_process(false)
+				main.game.finish(true, "Paused result regression")
+		main.state_seconds = 1.25
+		var screen_ui = main.ui
+		var child_count: int = screen_ui.get_child_count()
+		var note_count: int = main.notes_seen
+		main.show_pause()
+		main.show_settings("pause")
+		main.show_pause()
+		main.resume_shift()
+		check(main.state == screen and main.ui == screen_ui and main.ui.visible, screen + " restores original controls after settings")
+		check(is_equal_approx(main.state_seconds, 1.25), screen + " preserves remaining time")
+		check(main.ui.get_child_count() == child_count and main.notes_seen == note_count, screen + " does not duplicate controls or consume another note")
+	main.end_game_node()
+	main.show_patrol()
+	main.state_seconds = 6.0
+	main.notes_seen = 8
+	main.show_notebook("patrol")
+	check(main.notebook_page == 7, "clipboard opens latest collected note")
+	for control in main.ui.get_children():
+		if control is Button and control.text == "PREVIOUS NOTE": control.pressed.emit(); break
+	check(main.notebook_page == 6, "clipboard can revisit earlier notes")
+	for control in main.ui.get_children():
+		if control is Button and control.text == "KEEP WORKING": control.pressed.emit(); break
+	check(main.state == "patrol" and is_equal_approx(main.state_seconds, 6.0), "clipboard preserves intermission countdown")
+	for control in main.ui.get_children():
+		if control is Button and control.text == "READY NOW": control.pressed.emit(); break
+	check(main.state == "task" and is_instance_valid(main.game), "READY NOW immediately starts actual gameplay")
+	main.audio.escalate(1.0, 2)
+	main.new_shift()
+	check(is_equal_approx(main.audio.music.pitch_scale, 1.0) and main.audio.phase == 0.0, "restart resets audio escalation and pitch")
+	main.show_menu()
+	check(not main.audio.music.playing and not main.audio.ambience.playing, "return to menu stops shift loops")
+	main.new_shift()
+
 	# Hold-door pause uses real SceneTree pausing, not a mocked timer.
 	main.index = 5
 	main.show_intro()

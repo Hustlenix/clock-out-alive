@@ -95,7 +95,10 @@ func panel(rect: Rect2, color: Color = INK, border: Color = BLUE) -> void:
 
 func button(rect: Rect2, value: String, color: Color = GREEN) -> void:
 	panel(rect, Color("1b292c"), color)
-	label_at(value, rect.position + Vector2(18, rect.size.y * 0.5 + 8), 23, color)
+	var size = 23
+	while size > 14 and font.get_string_size(value, HORIZONTAL_ALIGNMENT_LEFT, -1, size).x > rect.size.x - 36:
+		size -= 1
+	label_at(value, rect.position + Vector2(18, rect.size.y * 0.5 + 8), size, color)
 
 func clicked(event: InputEvent, rect: Rect2) -> bool:
 	return event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT and event.pressed and rect.has_point(event.position)

@@ -99,7 +99,7 @@ func _initialize() -> void:
 		var restock_stats = watch_signal(restock)
 		for product in restock.items:
 			drag(restock, product.pos + restock.SIZE * 0.5, restock.slots[product.slot].get_center())
-		verify(restock.shifted == (difficulty >= 2), "restock variation d%d" % difficulty)
+		verify(restock.shifted == (difficulty >= 1), "restock variation d%d" % difficulty)
 		check_final(restock, restock_stats, true, "restock successful d%d" % difficulty)
 		restock = fresh("restock_aisle", difficulty)
 		restock_stats = watch_signal(restock)

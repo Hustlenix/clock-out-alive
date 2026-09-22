@@ -36,6 +36,9 @@ func play(cue: String) -> void:
 			return
 
 func begin() -> void:
+	silence()
+	phase = 0.0
+	music.pitch_scale = 1.0
 	enabled = true
 	loop_on(ambience, "hum", -20)
 	loop_on(music, "music", -24)
